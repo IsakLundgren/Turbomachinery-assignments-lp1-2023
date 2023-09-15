@@ -10,7 +10,7 @@ i = 0  # deg
 a = 0.4 * l  # m
 
 # Set function domain
-s_l = np.linspace(0.5, 2.5, 100)
+s_l = np.linspace(0.5, 2.75, 1000)
 
 
 # Define degree trigonometric funtions
@@ -31,16 +31,18 @@ alpha1 = alpha1p + i  # deg
 camber = alpha1p - alpha2p  # deg
 
 # Deviation at nominal incidence
-m = 0.23 * (2 * a / l) ** 2 + alpha2p / 500  # -
-deviation = m * camber * np.sqrt(s_l)  # deg
+deviation = (0.23 * (2 * a / l) ** 2 + alpha2p / 500) / (1-(camber * np.sqrt(s_l)) / 500) * camber * np.sqrt(s_l)  # deg
 
 # Alpha2 and deflection
 alpha2 = alpha2p + deviation
+alpha2sergio = 500 * (0.23*(2 * a/l) ** 2 * camber * s_l ** 0.5 + alpha2p) / (500 - camber * s_l ** 0.5)
 deflection = alpha1 - alpha2
+deflection_sergio = alpha1 - alpha2
 
 # Plot deflection
 fig, ax1 = plt.subplots()
 ax1.plot(s_l, deflection, '-r', label="Deflection")
+ax1.plot(s_l, deflection_sergio, '-g', label="Deflection - sergio")
 ax1.set_title('Deflection and profile loss')
 ax1.set_ylabel('Deflection [deg]')
 ax1.set_xlabel('s/l [-]')
@@ -72,6 +74,15 @@ fig.savefig('img/DeflectionAndProfileLoss.png', dpi=figureDPI)
 fig = plt.figure()
 # plt.plot(s_l, alpha2, '-b')
 # plt.plot(s_l, alpha1*np.ones(len(s_l)), '-r')
-plt.plot(s_l, tand(alpha2), '-g')
+plt.plot(s_l, momThick_l, '-g')
 # Show figures
 plt.show(block=True)
+
+# Find eqDiff at s_l = 1 and s_l = 2
+s_lClosestTo1 = min(list(s_l), key=lambda x: abs(1 - x))
+s_lClosestTo2 = min(list(s_l), key=lambda x: abs(2 - x))
+ind1 = list(s_l).index(s_lClosestTo1)
+ind2 = list(s_l).index(s_lClosestTo2)
+
+print(f'c_max by c_2 at s/l = 1: {eqDiff[ind1]:.3f}.')
+print(f'c_max by c_2 at s/l = 2: {eqDiff[ind2]:.3f}.')
