@@ -58,7 +58,7 @@ momThick_l = 0.004 / (1 - 1.17 * np.log(eqDiff))
 
 # Pressure loss coefficient
 pressureLoss = (2 * momThick_l /
-                (s_l * l * cosd(alpha2) ** 2 * np.sqrt(1/4 * (tand(alpha1) - tand(alpha2)) ** 2 + 1)))
+                (s_l * cosd(alpha2) ** 2 * np.sqrt(1/4 * (tand(alpha1) - tand(alpha2)) ** 2 + 1)))
 
 # Plot pressure loss coefficient
 ax2 = ax1.twinx()
