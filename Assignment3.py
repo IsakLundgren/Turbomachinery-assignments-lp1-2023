@@ -69,14 +69,18 @@ print(f'η_tt: {eta_tt_set:.4g}.')
 
 # Plot continous efficiency
 fig, ax1 = plt.subplots()
-ax1.plot(phi_list, eta_tt * 100, '-r')
-ax1.set_title('Total-to-total efficiency for different flow coefficients')
+lns1 = ax1.plot(phi_list, eta_tt * 100, '-r', label='Efficiency')
+ax1.set_title('Total-to-total efficiency and pitch to chord ratio')
 ax1.set_ylabel('η_tt [%]')
 ax1.set_xlabel('Φ [-]')
 ax1.grid()
 ax2 = ax1.twinx()
-ax2.plot(phi_list, s_l_statorList, '-b', label="Both blade rows")
+lns2 = ax2.plot(phi_list, s_l_statorList, '-b', label="Pitch to chord")
 ax2.set_ylabel('s/l')
+lns = lns1 + lns2
+labs = [l.get_label() for l in lns]
+ax1.legend(lns, labs, loc=0)
+
 
 # Save figure
 figureDPI = 200
