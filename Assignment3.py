@@ -42,29 +42,17 @@ def totalToTotalEff(phi):
     R = 0.5
 
     # Calculate angles from R, psi, phi
-    alpha1 = alpha3 = arctand((1 / phi) * (R + psi/2 - 1))  # Eq 4.14
-    alpha2 = arctand(2 / phi * (1-R) + tand(alpha1))  # Eq 4.13a
-    beta2 = arctand(tand(alpha2) - 1 / phi)  # Eq 4.15
-    beta1 = arctand(2*R/phi - tand(beta2))
+    alpha1 = alpha3 = arctand((1 / phi) * (1 - R - psi/2))  # Eq 4.14
+    alpha2 = arctand(psi/phi + tand(alpha1))
+    beta2 = arctand((1 - psi) / phi - tand(alpha1))
+    beta1 = arctand(psi / phi + tand(beta2))
 
     # Calculate pitch-chord ratios
-    s_l_rotor = (DF + cosd(alpha1) / cosd(alpha2) - 1) / (1 / 2 * (tand(alpha1) - tand(alpha2)) * cosd(alpha1))
+    s_l_rotor = (DF + cosd(beta1) / cosd(beta2) - 1) / (1 / 2 * (tand(beta1) - tand(beta2)) * cosd(beta1))
     s_l_stator = (DF + cosd(alpha2) / cosd(alpha3) - 1) / (1 / 2 * (tand(alpha2) - tand(alpha3)) * cosd(alpha2))
 
-    # Bugfixing
-    c_x = 10
-    c_1 = c_x / cosd(alpha1)
-    c_2 = c_x / cosd(alpha2)
-    c_3 = c_x / cosd(alpha3)
-    c_t1 = c_x * tand(alpha1)
-    c_t2 = c_x * tand(alpha2)
-    c_t3 = c_x * tand(alpha3)
-
-    DF_recalc_rotor = (1 - c_2 / c_1) + (c_t1 - c_t2) / (2 * c_1) * s_l_rotor
-    DF_recalc_stator = (1 - c_3 / c_2) + (c_t2 - c_t3) / (2 * c_2) * s_l_stator
-
     # Fetch profile loss coefficients
-    Y_p_rotor = profileLoss(s_l_rotor, alpha1, alpha2)
+    Y_p_rotor = profileLoss(s_l_rotor, beta1, beta2)
     Y_p_stator = profileLoss(s_l_stator, alpha2, alpha3)
 
     # Construct total-to-total efficiency
@@ -77,25 +65,23 @@ eta_tt_set, dump1, dump2 = totalToTotalEff(phi_set)
 eta_tt, s_l_statorList, s_l_rotorList = totalToTotalEff(phi_list)
 
 # Print set answer
-print(f'η_tt: {eta_tt_set:.3g}.')
+print(f'η_tt: {eta_tt_set:.4g}.')
 
 # Plot continous efficiency
-fig1, ax1 = plt.subplots()
+fig, ax1 = plt.subplots()
 ax1.plot(phi_list, eta_tt * 100, '-r')
 ax1.set_title('Total-to-total efficiency for different flow coefficients')
 ax1.set_ylabel('η_tt [%]')
 ax1.set_xlabel('Φ [-]')
 ax1.grid()
-
-# Plot continous rotor/stator pitch-chord ratios
-fig2, ax2 = plt.subplots()
-ax2.plot(phi_list, s_l_statorList, '-r', label="stator")
-ax2.plot(phi_list, s_l_rotorList, '-b', label="rotor")
-ax2.set_title('Pitch-chord ratios for different flow coefficients')
+ax2 = ax1.twinx()
+ax2.plot(phi_list, s_l_statorList, '-b', label="Both blade rows")
 ax2.set_ylabel('s/l')
-ax2.set_xlabel('Φ [-]')
-ax2.grid()
-ax2.legend()
+
+# Save figure
+figureDPI = 200
+fig.set_size_inches(8, 6)
+fig.savefig('img/EfficiencyAndPitchToChord.png', dpi=figureDPI)
 
 # Show plots
 plt.show()
