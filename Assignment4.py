@@ -135,12 +135,54 @@ deHaller_s = cosd(alpha2) / cosd(alpha3)
 
 # Plot angle distributions
 fig, ax = plt.subplots()
-ax.plot(r, alpha1, '-r', label='alpha_1')
+ax.plot(r, alpha1, label='alpha_1')
+ax.plot(r, camber_r, label='theta_rotor')  # TODO Rotor quantities are wierd
+ax.plot(r, camber_s, label='theta_stator')
+ax.plot(r, stagger_r, label='xi_rotor')
+ax.plot(r, stagger_s, label='xi_stator')
 ax.set_title('Flow, camber and stagger angles')
 ax.set_ylabel('degrees [deg]')
 ax.set_xlabel('r [m]')
 ax.grid()
 ax.legend()
+
+# Save figure
+figureDPI = 200
+fig.set_size_inches(8, 6)
+fig.savefig('img/AngleDistributions.png', dpi=figureDPI)
+
+# Plot dimensionless quantities
+fig, ax = plt.subplots()
+ax.plot(r, phi, label='Flow coefficient')
+ax.plot(r, psi, label='Stage load')  # TODO Stage loading and degree of reaction is wierd
+ax.plot(r, R, label='Degree of reaction')
+ax.set_title('Normal stage parameters')
+ax.set_ylabel('[-]')
+ax.set_xlabel('r [m]')
+ax.grid()
+ax.legend()
+
+# Save figure
+figureDPI = 200
+fig.set_size_inches(8, 6)
+fig.savefig('img/NormalStageParameters.png', dpi=figureDPI)
+
+# Plot deHaller and diffusion factor
+fig, ax = plt.subplots()
+ax.plot(r, DF_r, label='Diffusion factor rotor')  # TODO This is wierd
+ax.plot(r, DF_s, label='Diffusion factor stator')
+ax.plot(r, deHaller_r, label='DeHaller number rotor')
+ax.plot(r, deHaller_s, label='DeHaller number stator')
+ax.set_title('Diffusion factor and DeHaller number')
+ax.set_ylabel('[-]')
+ax.set_xlabel('r [m]')
+ax.grid()
+ax.legend()
+
+# Save figure
+figureDPI = 200
+fig.set_size_inches(8, 6)
+fig.savefig('img/DFandDeHaller.png', dpi=figureDPI)
 
 # Show plots
 plt.show()
