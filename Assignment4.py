@@ -185,6 +185,19 @@ figureDPI = 200
 fig.set_size_inches(8, 6)
 fig.savefig('img/DFandDeHaller.png', dpi=figureDPI)
 
+# Plot velocity distribution
+fig, ax = plt.subplots()
+ax.plot(r, c1, label='c1')
+ax.set_title('Rotor inlet velocity distribution')
+ax.set_ylabel('c1 [m/s]')
+ax.set_xlabel('r [m]')
+ax.grid()
+
+# Save figure
+figureDPI = 200
+fig.set_size_inches(8, 6)
+fig.savefig('img/VelocityDistribution.png', dpi=figureDPI)
+
 # Show plots
 plt.show()
 
