@@ -1,4 +1,5 @@
 import numpy as np
+import statistics
 import matplotlib.pyplot as plt
 
 
@@ -90,8 +91,8 @@ omegaRot = U_m / r_m  # Rad s-1
 U = omegaRot * r  # m s-1
 
 # Calculate relative flow angles
-beta1 = arctand((c_theta_1 - U)/c_x)
-beta2 = arctand((c_theta_2 - U)/c_x)
+beta1 = arctand((U - c_theta_1)/c_x)
+beta2 = arctand((U - c_theta_2)/c_x)
 
 # Calculate blade, camber and stagger angles
 alpha1_p = beta1
@@ -109,7 +110,7 @@ stagger_s = (alpha2_p_s + alpha3_p) / 2
 phi = c_x / U
 
 # Calculate stage loading
-psi = phi * (tand(beta1) - tand(beta2))  # 5.17b
+psi = phi * (tand(alpha2) - tand(alpha1))  # 5.17b
 
 # Calculate degree of reaction
 R = phi/2 * (tand(beta1) + tand(beta2))  # 5.21
@@ -126,8 +127,8 @@ s_l_r = s_r / l_chord
 s_l_s = s_s / l_chord
 
 # Calculate diffusion factor
-DF_r = 1 - cosd(beta1) / cosd(beta2) + (tand(beta1) - tand(beta2)) * cosd(beta1) * s_l_r
-DF_s = 1 - cosd(alpha2) / cosd(alpha3) + (tand(alpha2) - tand(alpha3)) * cosd(alpha2) * s_l_r
+DF_r = 1 - cosd(beta1) / cosd(beta2) + 1/2 * (tand(beta1) - tand(beta2)) * cosd(beta1) * s_l_r
+DF_s = 1 - cosd(alpha2) / cosd(alpha3) + 1/2 * (tand(alpha2) - tand(alpha3)) * cosd(alpha2) * s_l_r
 
 # Calculate deHaller number
 deHaller_r = cosd(beta1) / cosd(beta2)
@@ -136,7 +137,7 @@ deHaller_s = cosd(alpha2) / cosd(alpha3)
 # Plot angle distributions
 fig, ax = plt.subplots()
 ax.plot(r, alpha1, label='alpha_1')
-ax.plot(r, camber_r, label='theta_rotor')  # TODO Rotor quantities are wierd
+ax.plot(r, camber_r, label='theta_rotor')
 ax.plot(r, camber_s, label='theta_stator')
 ax.plot(r, stagger_r, label='xi_rotor')
 ax.plot(r, stagger_s, label='xi_stator')
@@ -154,7 +155,7 @@ fig.savefig('img/AngleDistributions.png', dpi=figureDPI)
 # Plot dimensionless quantities
 fig, ax = plt.subplots()
 ax.plot(r, phi, label='Flow coefficient')
-ax.plot(r, psi, label='Stage load')  # TODO Stage loading and degree of reaction is wierd
+ax.plot(r, psi, label='Stage load')
 ax.plot(r, R, label='Degree of reaction')
 ax.set_title('Normal stage parameters')
 ax.set_ylabel('[-]')
@@ -169,7 +170,7 @@ fig.savefig('img/NormalStageParameters.png', dpi=figureDPI)
 
 # Plot deHaller and diffusion factor
 fig, ax = plt.subplots()
-ax.plot(r, DF_r, label='Diffusion factor rotor')  # TODO This is wierd
+ax.plot(r, DF_r, label='Diffusion factor rotor')
 ax.plot(r, DF_s, label='Diffusion factor stator')
 ax.plot(r, deHaller_r, label='DeHaller number rotor')
 ax.plot(r, deHaller_s, label='DeHaller number stator')
